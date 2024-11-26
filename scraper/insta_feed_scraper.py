@@ -315,11 +315,17 @@ while True:
                 driver.get(main_url)
                 time.sleep(3)
                 try:
-                    if driver.find_element(By.XPATH,"/html/body/div[1]/div/div/section/main/div/header/section/div[1]/h2"):
+                    #if driver.find_element(By.XPATH,"/html/body/div[1]/div/div/section/main/div/header/section/div[1]/h2"):
+                    if driver.find_element(By.XPATH,f"//*[contains(text(), {account})]"):
                         print(colored("\n[SUCCESS]: Got into the user page. \n", "green"))
                         break
                 except NoSuchElementException:
                     pass
+            # #accept the cookies again
+            # try:
+            #     driver.find_element(By.XPATH, "/html/body/div[4]/div/div/button[1]").click()
+            # except NoSuchElementException:
+            #     pass
 
             # Take a screenshot of the welcome page
             driver.get_screenshot_as_file("welcome_page.png")

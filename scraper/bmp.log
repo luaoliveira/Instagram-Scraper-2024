@@ -1,13 +1,19 @@
-[INFO  2024-11-25T19:48:35,138 net.lightbody.bmp.proxy.Main] (main) Starting BrowserMob Proxy version 2.1.4 
-[INFO  2024-11-25T19:48:35,171 org.eclipse.jetty.util.log] (main) jetty-7.x.y-SNAPSHOT 
-[INFO  2024-11-25T19:48:35,347 org.eclipse.jetty.util.log] (main) started o.e.j.s.ServletContextHandler{/,null} 
-[INFO  2024-11-25T19:48:35,436 org.eclipse.jetty.util.log] (main) Started SelectChannelConnector@0.0.0.0:8000 
-[INFO  2024-11-25T19:48:36,236 org.littleshoot.proxy.impl.DefaultHttpProxyServer] (qtp200744172-18) Starting proxy at address: 0.0.0.0/0.0.0.0:8081 
-[INFO  2024-11-25T19:48:36,265 org.littleshoot.proxy.impl.DefaultHttpProxyServer] (qtp200744172-18) Proxy listening with TCP transport 
-[INFO  2024-11-25T19:48:36,598 org.littleshoot.proxy.impl.DefaultHttpProxyServer] (qtp200744172-18) Proxy started at address: /0:0:0:0:0:0:0:0:8081 
-[INFO  2024-11-25T19:54:24,111 org.littleshoot.proxy.impl.ClientToProxyConnection] (LittleProxy-0-ClientToProxyWorker-6) (NEGOTIATING_CONNECT) [id: 0x7135c547, L:/0:0:0:0:0:0:0:1:8081 - R:/0:0:0:0:0:0:0:1:58405]: An IOException occurred on ClientToProxyConnection: An established connection was aborted by the software in your host machine 
-[INFO  2024-11-25T19:54:24,113 org.littleshoot.proxy.impl.ProxyToServerConnection] (LittleProxy-0-ProxyToServerWorker-6) (HANDSHAKING) [id: 0x9aae8899, L:0.0.0.0/0.0.0.0:58407]: Connection to upstream server failed java.nio.channels.ClosedChannelException: null
-	at io.netty.handler.ssl.SslHandler.channelInactive(...)(Unknown Source) ~[browsermob-dist-2.1.4.jar:?]
+[INFO  2024-11-27T00:27:05,972 net.lightbody.bmp.proxy.Main] (main) Starting BrowserMob Proxy version 2.1.4 
+[INFO  2024-11-27T00:27:06,035 org.eclipse.jetty.util.log] (main) jetty-7.x.y-SNAPSHOT 
+[INFO  2024-11-27T00:27:06,273 org.eclipse.jetty.util.log] (main) started o.e.j.s.ServletContextHandler{/,null} 
+[WARN  2024-11-27T00:27:06,446 org.eclipse.jetty.util.log] (main) FAILED SelectChannelConnector@0.0.0.0:8000: java.net.BindException: Address already in use: bind 
+[WARN  2024-11-27T00:27:06,446 org.eclipse.jetty.util.log] (main) FAILED org.eclipse.jetty.server.Server@5116ac09: java.net.BindException: Address already in use: bind 
+[ERROR 2024-11-27T00:27:06,446 net.lightbody.bmp.proxy.Main] (main) Failed to start Jetty server. Aborting. java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method) ~[?:?]
+	at sun.nio.ch.Net.bind(Net.java:459) ~[?:?]
+	at sun.nio.ch.Net.bind(Net.java:448) ~[?:?]
+	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:227) ~[?:?]
+	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:80) ~[?:?]
+	at org.eclipse.jetty.server.nio.SelectChannelConnector.open(SelectChannelConnector.java:162) ~[browsermob-dist-2.1.4.jar:?]
+	at org.eclipse.jetty.server.AbstractConnector.doStart(AbstractConnector.java:356) ~[browsermob-dist-2.1.4.jar:?]
+	at org.eclipse.jetty.server.nio.SelectChannelConnector.doStart(SelectChannelConnector.java:240) ~[browsermob-dist-2.1.4.jar:?]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:55) ~[browsermob-dist-2.1.4.jar:?]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:269) ~[browsermob-dist-2.1.4.jar:?]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:55) ~[browsermob-dist-2.1.4.jar:?]
+	at net.lightbody.bmp.proxy.Main.main(Main.java:64) [browsermob-dist-2.1.4.jar:?]
 
-[INFO  2024-11-25T19:55:56,797 org.littleshoot.proxy.impl.DefaultHttpProxyServer] (LittleProxy-JVM-shutdown-hook) Shutting down proxy server immediately (non-graceful) 
-[INFO  2024-11-25T19:55:56,797 org.littleshoot.proxy.impl.DefaultHttpProxyServer] (LittleProxy-JVM-shutdown-hook) Closing all channels (non-graceful) 
