@@ -23,6 +23,9 @@ from datetime import datetime
 from termcolor import colored
 import pandas as pd
 import time, json, os
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.action_chains import ActionChains
+
 
 
 ################################################################################
@@ -76,7 +79,7 @@ def process_first_posts(account, driver):
     driver.get(posts)
     time.sleep(3)
 
-    data = json.loads(driver.find_element_by_xpath("/html/body/pre").text)
+    data = json.loads(driver.find_element(By.XPATH,"/html/body/pre").text)
 
     # Print the total number of posts
     num_post = data['graphql']['user']['edge_owner_to_timeline_media']['count']
@@ -156,7 +159,7 @@ def process_graphql_response(url, driver):
         time.sleep(2)
         driver.get_screenshot_as_file("json.png")
         try:
-            data = json.loads(driver.find_element_by_xpath("/html/body/pre").text)
+            data = json.loads(driver.find_element(By.XPATH,"/html/body/pre").text)
             break
         except NoSuchElementException:
             print(colored("\n[INFO]: Failed extracting a graphQl response, now trying to access from "
@@ -165,9 +168,9 @@ def process_graphql_response(url, driver):
             # Connect with an instagram account
             user, mdp = input(colored("\n[INFO]: In order to carry on scraping, type a username"
                                       " and its password seperated by one space: ", "yellow")).split()
-            driver.find_element_by_name("username").send_keys(user)
-            driver.find_element_by_name("password").send_keys(mdp)
-            driver.find_element_by_xpath("//*[@id='loginForm']/div/div[3]/button/div").click()
+            driver.find_element(By.NAME, "username").send_keys(user)
+            driver.find_element(By.NAME, "password").send_keys(mdp)
+            driver.find_element(By.XPATH, "//*[@id='loginForm']/div/div[3]/button/div").click()
             time.sleep(4)
             print(colored("\n[INFO]: Logged into the website. \n", "yellow"))
 
@@ -261,7 +264,9 @@ options.add_argument('--allow-running-insecure-content')
 options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                      "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36")
 options.add_argument('--headless')
-driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service,options=options)
 
 failure = 0
 while True:
@@ -274,7 +279,7 @@ while True:
                 driver.get(login_url)
                 time.sleep(3)
                 try:
-                    if driver.find_element_by_name("username"):
+                    if driver.find_element(By.NAME,"username"):
                         raise Exception("Instagram redirected us to a login page")
                 except NoSuchElementException:
                     pass
@@ -285,16 +290,23 @@ while True:
 
             # Accept website cookies
             try:
-                driver.find_element_by_xpath("/html/body/div[4]/div/div/button[1]").click()
+                driver.find_element(By.XPATH, "/html/body/div[4]/div/div/button[1]").click()
             except NoSuchElementException:
                 pass
 
             # Connect with an instagram account
             user, mdp = input(colored("\n[INFO]: Please type a username and its password seperated by one space"
                                       " for login: ", "yellow")).split()
-            driver.find_element_by_name("username").send_keys(user)
-            driver.find_element_by_name("password").send_keys(mdp)
-            driver.find_element_by_xpath("//*[@id='loginForm']/div/div[3]/button/div").click()
+            
+            wait = WebDriverWait(driver, 15)
+            wait.until(ec.element_to_be_clickable(driver.find_element(By.NAME, "username"))).send_keys(user)
+            wait.until(ec.element_to_be_clickable(driver.find_element(By.NAME,"password"))).send_keys(mdp)
+            print("Inserted password and username")
+            ##############################################################
+            #driver.find_element(By.XPATH, "//*[@id='loginForm']/div/div[3]/button/div").click()
+            element = driver.find_element(By.XPATH, "//*[@id='loginForm']/div/div[3]/button/div")
+            driver.execute_script("arguments[0].click();", element)
+            ####################################################
             time.sleep(10)
             print(colored("\n[SUCCESS]: Logged into the website. \n", "green"))
 
@@ -303,7 +315,7 @@ while True:
                 driver.get(main_url)
                 time.sleep(3)
                 try:
-                    if driver.find_element_by_xpath("/html/body/div[1]/div/div/section/main/div/header/section/div[1]/h2"):
+                    if driver.find_element(By.XPATH,"/html/body/div[1]/div/div/section/main/div/header/section/div[1]/h2"):
                         print(colored("\n[SUCCESS]: Got into the user page. \n", "green"))
                         break
                 except NoSuchElementException:
@@ -322,7 +334,7 @@ while True:
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         start_scroll = time.time()
         try:
-            driver.find_element_by_xpath("/html/body/div[1]/section/main/div/div[3]/div[1]/div/button").click()
+            driver.find_element(By.XPATH,"/html/body/div[1]/section/main/div/div[3]/div[1]/div/button").click()
             scroll_down(driver)
         except NoSuchElementException:
             scroll_down(driver)
@@ -355,7 +367,7 @@ while True:
 
     except Exception as e:
         print(colored("\n[ERROR]: {}\n".format(e), "red"))
-        if e.args[0] == 'Instagram redirected us to a login page':
+        if e.args and e.args[0] == 'Instagram redirected us to a login page':
             failure = 200
         else:
             break
